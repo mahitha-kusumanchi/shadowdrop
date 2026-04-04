@@ -15,7 +15,7 @@ const SubmitReport = () => {
 
     useEffect(() => {
         // Fetch public key from server
-        axios.get('http://localhost:5000/api/config/public-key')
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/config/public-key`)
             .then(res => setServerKey(res.data.publicKey))
             .catch(err => console.error("Failed to fetch public key", err));
     }, []);
@@ -47,7 +47,7 @@ const SubmitReport = () => {
             setStatus('sending');
 
             // 4. Send to Server
-            const res = await axios.post('http://localhost:5000/api/reports', {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reports`, {
                 encryptedData,
                 encryptedKey,
                 iv: ivBase64

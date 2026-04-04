@@ -25,7 +25,7 @@ const SetupMFA = () => {
     const startSetup = async () => {
         try {
             const authToken = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:5000/api/auth/mfa/setup', {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/mfa/setup`, {
                 headers: { Authorization: `Bearer ${authToken}` }
             });
             setQrCode(res.data.qrCode);
@@ -36,7 +36,7 @@ const SetupMFA = () => {
     const verifyMFA = async () => {
         try {
             const authToken = localStorage.getItem('token');
-            await axios.post('http://localhost:5000/api/auth/mfa/verify', { token }, {
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/mfa/verify`, { token }, {
                 headers: { Authorization: `Bearer ${authToken}` }
             });
             setStatus('success');
@@ -95,7 +95,7 @@ const CreateUserForm = () => {
                 return;
             }
 
-            await axios.post('http://localhost:5000/api/auth/register', trimmedData, {
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/register`, trimmedData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert("User created!");
@@ -143,7 +143,7 @@ const AdminDashboard = () => {
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:5000/api/auth/users', {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setAllUsers(res.data);
@@ -153,7 +153,7 @@ const AdminDashboard = () => {
     const fetchReports = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:5000/api/reports', {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reports`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setReports(res.data);
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
     const handleUpdateStatus = async (id, status) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.patch(`http://localhost:5000/api/reports/${id}/status`, { status }, {
+            await axios.patch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reports/${id}/status`, { status }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchReports();
@@ -199,7 +199,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:5000/api/auth/users/${userId}`, {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/users/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert('User deleted successfully!');
@@ -389,7 +389,7 @@ const AdminDashboard = () => {
                                         <button onClick={async () => {
                                             if (confirm("Delete this report?")) {
                                                 const token = localStorage.getItem('token');
-                                                await axios.delete(`http://localhost:5000/api/reports/${report.id}`, {
+                                                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/reports/${report.id}`, {
                                                     headers: { Authorization: `Bearer ${token}` }
                                                 });
                                                 fetchReports();

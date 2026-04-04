@@ -18,7 +18,7 @@ const AdminLogin = () => {
             const payload = { username, password };
             if (stage === 'mfa') payload.mfaToken = mfaToken;
 
-            const res = await axios.post('http://localhost:5000/api/auth/login', payload);
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, payload);
 
             // Success
             console.log("Login Successful:", res.data);
