@@ -34,18 +34,21 @@ app.use(express.json());
 // Initialize Keys
 require('./config/keys').initializeKeys();
 
-// Database Sync & Connection — then auto-seed superadmin if DB is empty
+// Database Sync & Connection — force-sync superadmin credentials on every startup
 sequelize.sync().then(async () => {
     console.log('SQLite Database Connected & Synced');
 
-    // Auto-seed superadmin on first run (e.g. fresh Render deployment)
-    const count = await User.count();
-    if (count === 0) {
-        const username = process.env.ADMIN_USERNAME || 'superadmin';
-        const password = process.env.ADMIN_PASSWORD || 'Admin@1234';
-        const hashed = await argon2.hash(password);
+    const username = process.env.ADMIN_USERNAME || 'superadmin';
+    const password = process.env.ADMIN_PASSWORD || 'Admin@1234';
+    const hashed = await argon2.hash(password);
+
+    const admin = await User.findOne({ where: { username } });
+    if (!admin) {
         await User.create({ username, password: hashed, role: 'SuperAdmin', mfaEnabled: false });
-        console.log(`✅ Superadmin seeded — username: ${username}`);
+        console.log(`✅ Superadmin created — username: ${username}`);
+    } else {
+        await admin.update({ password: hashed });
+        console.log(`🔄 Superadmin password reset — username: ${username}`);
     }
 }).catch(err => {
     console.error('Database Connection Error:', err);
