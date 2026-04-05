@@ -9,24 +9,10 @@ const argon2 = require('argon2');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS — allow local dev + deployed Vercel frontend
-const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    process.env.CLIENT_URL,   // e.g. https://shadowdrop.vercel.app
-].filter(Boolean);
-
 // Middleware
 app.use(helmet());
 app.use(cors({
-    origin: (origin, callback) => {
-        // Allow requests with no origin (curl, Postman, server-to-server)
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error(`CORS blocked for origin: ${origin}`));
-        }
-    },
+    origin: 'https://shadowdrop.vercel.app',
     credentials: true
 }));
 app.use(express.json());
