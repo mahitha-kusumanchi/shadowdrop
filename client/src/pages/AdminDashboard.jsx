@@ -78,7 +78,7 @@ const SetupMFA = () => {
     );
 };
 
-const CreateUserForm = () => {
+const CreateUserForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({ username: '', password: '', role: 'Investigator' });
     const handleCreate = async (e) => {
         e.preventDefault();
@@ -100,6 +100,7 @@ const CreateUserForm = () => {
             });
             alert("User created!");
             setFormData({ username: '', password: '', role: 'Investigator' });
+            if (onSuccess) onSuccess(); // refresh user list
         } catch (err) { alert(err.response?.data?.message || "Failed"); }
     };
     return (
@@ -347,7 +348,7 @@ const AdminDashboard = () => {
                         <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-primary">
                             <Plus className="w-6 h-6" /> Create New Account
                         </h2>
-                        <CreateUserForm />
+                        <CreateUserForm onSuccess={fetchUsers} />
                     </div>
                 </div>
             )}
